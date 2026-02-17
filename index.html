@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ITI Student Portal</title>
+
+<style>
+body{
+  font-family: Arial;
+  margin:0;
+  background:linear-gradient(135deg,#4e73df,#1cc88a);
+  color:white;
+  text-align:center;
+}
+
+.container{
+  padding:40px 20px;
+}
+
+.card{
+  background:white;
+  color:black;
+  padding:25px;
+  margin:20px auto;
+  width:350px;
+  border-radius:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+input{
+  width:90%;
+  padding:8px;
+  margin:8px 0;
+}
+
+button{
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  cursor:pointer;
+  background:#4e73df;
+  color:white;
+}
+
+button:hover{
+  transform: scale(1.05);
+    background: darkblue;
+ 
+}
+  .link{ 
+    color:white;
+    text-decoration:none;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>ITI Student Portal</h1>
+
+  <div class="card">
+    <h3>Search Student</h3>
+    <input type="text" id="search" placeholder="Enter Roll Number or Name">
+    <button onclick="searchData()">Search</button>
+    <div id="result"></div>
+  </div>
+
+  <div class="card">
+    <h3>New Student?</h3>
+    <button onclick="window.location.href='register.html'">Register Here </button>
+  </div>
+</div>
+
+
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbzoxVaj3-tRzzoDJOHZbfXU9P74E1ZlglzK3TtWUdDZW2AfbHS8qH47QczmEfT0FLUX/exec";
+
+function searchData(){
+  const query = document.getElementById("search").value;
+
+  fetch(scriptURL,{
+    method:"POST",
+    body: JSON.stringify({action:"search",query:query})
+  })
+  .then(res=>res.text())
+  .then(data=>{
+    if(data==="Not Found"){
+      document.getElementById("result").innerHTML="No Record Found";
+    }else{
+      const row = JSON.parse(data);
+      document.getElementById("result").innerHTML = `
+        <p><b>Name:</b> ${row[0]}</p>
+         <p><b>father:</b> ${row[1]}</p>
+        <p><b>Roll:</b> ${row[2]}</p>
+        <p><b>Trade:</b> ${row[4]}</p>
+         <p><b>batch:</b> ${row[5]}</p>
+          <p><b>mobile:</b> ${row[7]}</p>
+           <p><b>email:</b> ${row[8]}</p>
+            <p><b>dob:</b> ${row[9]}</p>
+             <p><b>year:</b> ${row[10]}</p>
+        <button onclick="editData('${row[2]}')">Edit</button>
+      `;
+    }
+  });
+}
+
+function editData(roll){
+  localStorage.setItem("editRoll", roll);
+  window.location.href="register.html";
+}
+</script>
+
+</body>
+</html>
